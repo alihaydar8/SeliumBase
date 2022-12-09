@@ -8,7 +8,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 # ################## docker run -d -p 4444:4444 --shm-size="2g" selenium/standalone-chrome:4.7.0-20221202 
 class TestLogin():
   def setup_method(self, method):
-    self.driver = webdriver.Remote(command_executor="http://chrome:4444/wd/hub", options=webdriver.ChromeOptions())
+    self.driver = webdriver.Remote(command_executor="http://172.21.0.3:4444/wd/hub", options=webdriver.ChromeOptions())
     self.driver.implicitly_wait(30)
     self.wait = WebDriverWait(self.driver, 10)
     self.vars = {}
