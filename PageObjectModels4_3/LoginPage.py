@@ -1,45 +1,24 @@
-from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium import webdriver 
-from webdriver_manager.chrome import ChromeDriverManager 
-from selenium.webdriver.chrome.service import Service
+import pytest
 from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.options import Options
 
+URL =  "https://opensource-demo.orangehrmlive.com/web/index.php/auth/login"
 
-class Login :
-  
-    def __init__(self,url):
-        self.driver = webdriver.Chrome(service=Service(ChromeDriverManager(version='107.0.5304.62').install()))
-        self.wait = WebDriverWait(self.driver, 10)
-        self.driver.implicitly_wait(30)
-        self.driver.get(url)
-
-    def wait_for(self,locator):
-        return self.wait.until(EC.presence_of_all_elements_located(locator))
+class LoginPage:
+    def __init__(self, driver):
+        self.driver = driver
+        self.url = URL 
     
-    def wait_to_be_clickable(self,locator):
-        return self.wait.until(EC.element_to_be_clickable(locator))
+    def open(self):
+        self.driver.get(self.url)
 
-    def find(self,locator):
-        if(self.driver.find_element(*locator).is_displayed()):
-            return self.driver.find_element(*locator)
-    
-    def enter_login_username(self,locator,username):
-        self.wait_for(locator).clear()
-        self.find(locator).send_keys(username)
-    
-    def enter_login_password(self,locator,password):
-        self.wait_for(locator).clear()
-        self.find(locator).send_keys(password)
+    def login(self, username, password):
+        username_input = self.driver.find_element(By.NAME,"username")
 
-    def click_login_button(self,locator):
-        self.wait_to_be_clickable(locator).click()
+        username_input.send_keys(username)
+        password_input = self.driver.find_element(By.NAME, "password")
+        submit_button = self.driver.find_element(By.CSS_SELECTOR, ".oxd-button")
+        password_input.send_keys(password)
+        submit_button.click()
 
-    def check_conextion_with_Link_Text_Present(self,locator):
-        assert self.find(locator),"element Leave not fund"   
-
-    def close_and_close(self):
-        self.driver.close()
-        self.driver.quit()
-
+    def checklogin(self):
+        assert self.driver.find_element(By.LINK_TEXT, "Admin"),"ERROR LOGIN"
